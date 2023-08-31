@@ -16,6 +16,8 @@ Yet another set of related vulnerabilities were Prototype Pollution Protection B
 ### Generating database and table schema
 When running the application and navigating from the front page to a single delayed train, an SQLite database was automatically created. When navigating back to the front page, the server would crash due to a missing "tickets" table in the database. The error was resolved by generating the table schema using the reset_db bash script.
 
+To get the backend up and running correctly we needed to create a .env file for the application to load in our environment variables. The variable we needed was "TRAFIKVERKET_API_KEY", so we also had to create accounts at trafikverket to be able to create and use api keys to communicate with trafikverkets api.
+
 (TODO: Describe other steps (if any) taken to get the application running)
 
 (TODO: Explain/discuss the choice of framework)
