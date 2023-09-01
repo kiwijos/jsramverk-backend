@@ -16,3 +16,6 @@ When running the application and navigating from the front page to a single dela
 
 ### Getting API keys and loading environment variables
 To get the backend up and running correctly we needed to create a .env file for the application to load in our environment variables. The variable we needed was "TRAFIKVERKET_API_KEY", so we also had to create accounts at Trafikverket to be able to create and use API keys to communicate with their API.
+
+## Backend framwork
+Express has been the recomended framework for our project. Chosing Express is however a common and well justified choice for several other reasons as well. It is one of the most widely adopted Node.js framworks in the industry, no doubt due to it's speed and simplicity and active development community. These features align closely with the requirements of the project. No wonder it is the recomended choice.
