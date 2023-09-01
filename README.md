@@ -7,9 +7,9 @@ This is the backend part of our web application. By documenting our development 
 ### Fixing vulnerabilities
 All vulnerabilities found when initially scanning the project using the npm audit tool were fixed by running the `npm audit fix` command – updating any vulnerable dependencies.
 
-Some packages were vulnerable to Regular Expression DoS attacks, likely due to some sort of inefficient processing of certain inputs that causes the regular expressions to work very slowly. This vulerabiliy was sometimes related to another vulerability, namely Inefficient Regular Expression Complexity. This means that the regular expressions had inefficient, or even exponential, worst-case computational complexities, resulting in excessive processing demands if certain patterns are input or when increasing the input length.
+Some packages were vulnerable to Regular Expression DoS attacks, likely due to some sort of inefficient processing of certain inputs that causes the regular expressions to work very slowly. This vulnerability was sometimes related to another vulnerability, namely Inefficient Regular Expression Complexity. This means that the regular expressions had inefficient, or even exponential, worst-case computational complexities, resulting in excessive processing demands if certain patterns are input or when increasing the input length.
 
-Another type of vulerability was Exposure of Sensitive Information to an Unauthorized Actor. This seems to only have affected one package. The vulnerability suggests that, under certain conditions, an unauthorized actor could access sensitive information.
+Another type of vulnerability was Exposure of Sensitive Information to an Unauthorized Actor. This seems to only have affected one package. The vulnerability suggests that, under certain conditions, an unauthorized actor could access sensitive information.
 
 Yet another set of related vulnerabilities were Prototype Pollution Protection Bypass and Prototype Pollution. Prototype Pollution Protection Bypass means that an attacker could bypass the protections put in place to stop them from modifying global JavaScript object prototypes – causing Prototype Pollution.
 
