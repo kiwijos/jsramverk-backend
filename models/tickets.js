@@ -2,11 +2,18 @@ const database = require('../db/database.js');
 
 const tickets = {
     getTickets: async function getTickets(req, res){
-        var db = await database.openDb();
+        const db = await database.run().catch(console.dir);
 
-        var allTickets = await db.all(`SELECT *, ROWID as id FROM tickets ORDER BY ROWID DESC`);
+        const options = {
+            // Sort matched documents in descending order by id
+            sort: { "_id": -1 },
+            // Include all fields and rename _id to id
+            projection: { id: "$_id", code: 1, trainnumber: 1, traindate: 1},
+        };
 
-        await db.close();
+        const allTickets = await db.collection.find({}, options).toArray();
+
+        await db.client.close();
 
         return res.json({
             data: allTickets
@@ -14,20 +21,19 @@ const tickets = {
     },
 
     createTicket: async function createTicket(req, res){
-        var db = await database.openDb();
+        const db = await database.run().catch(console.dir);
 
-        const result = await db.run(
-            'INSERT INTO tickets (code, trainnumber, traindate) VALUES (?, ?, ?)',
-            req.body.code,
-            req.body.trainnumber,
-            req.body.traindate,
-        );
+        const result = await db.collection.insertOne({
+            code: req.body.code,
+            trainnumber: req.body.trainnumber,
+            traindate: req.body.traindate
+        });
 
-        await db.close();
+        await db.client.close();
 
         return res.json({
             data: {
-                id: result.lastID,
+                id: result.insertedId.toString(),
                 code: req.body.code,
                 trainnumber: req.body.trainnumber,
                 traindate: req.body.traindate,

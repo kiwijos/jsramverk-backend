@@ -5,7 +5,7 @@ const trains = {
         let db;
 
         try {
-            db = await database.openDb(version);
+            db = await database.run().catch(console.dir);
 
         } catch(error) {
             return {
@@ -13,7 +13,7 @@ const trains = {
                 message: error.message,
             };
         } finally {
-            await db.close();
+            await db.client.close();
         }
     }
 };
