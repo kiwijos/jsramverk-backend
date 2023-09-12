@@ -1,7 +1,11 @@
-const fetch = require('node-fetch')
+import fetch from 'node-fetch';
+import { Request, Response } from 'express';
 
 const delayed = {
-    getDelayedTrains: function getDelayedTrains(req, res) {
+    getDelayedTrains: function getDelayedTrains(
+        req: Request,
+        res: Response
+        ): void {
         const query = `<REQUEST>
                   <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
                   <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8">
@@ -32,10 +36,10 @@ const delayed = {
 
 
             const response = fetch(
-                "https://api.trafikinfo.trafikverket.se/v2/data.json", {
+                'https://api.trafikinfo.trafikverket.se/v2/data.json', {
                     method: "POST",
                     body: query,
-                    headers: { "Content-Type": "text/xml" }
+                    headers: { 'Content-Type': 'text/xml' }
                 }
             ).then(function(response) {
                 return response.json()
@@ -47,4 +51,4 @@ const delayed = {
     }
 };
 
-module.exports = delayed;
+export default delayed;

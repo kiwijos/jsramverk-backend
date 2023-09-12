@@ -1,7 +1,8 @@
-const fetch = require('node-fetch')
-const EventSource = require('eventsource')
+import fetch from 'node-fetch';
+import {Response as FetchResponse} from 'node-fetch';
+import EventSource from 'eventsource';
 
-async function fetchTrainPositions(io) {
+async function fetchTrainPositions(io): Promise<void> {
 
 
     const query = `<REQUEST>
@@ -11,11 +12,11 @@ async function fetchTrainPositions(io) {
 
     const trainPositions = {};
 
-    const response = await fetch(
-        "https://api.trafikinfo.trafikverket.se/v2/data.json", {
+    const response: FetchResponse = await fetch(
+        'https://api.trafikinfo.trafikverket.se/v2/data.json', {
             method: "POST",
             body: query,
-            headers: { "Content-Type": "text/xml" }
+            headers: { 'Content-Type': 'text/xml' }
         }
     )
     const result = await response.json()
@@ -24,13 +25,13 @@ async function fetchTrainPositions(io) {
     const eventSource = new EventSource(sseurl)
 
     eventSource.onopen = function() {
-        console.log("Connection to server opened.")
+        console.log('Connection to server opened.')
     }
 
-    io.on('connection', (socket) => {
+    io.on('connection', (socket: { emit: (arg0: string, arg1: { trainnumber: any; position: any; timestamp: any; bearing: any; status: boolean; speed: any; }) => void; }) => {
         console.log('a user connected')
 
-        eventSource.onmessage = function (e) {
+        eventSource.onmessage = function (e: { data: string; }) {
             try {
                 const parsedData = JSON.parse(e.data);
 
@@ -40,7 +41,7 @@ async function fetchTrainPositions(io) {
 
                     const matchCoords = /(\d*\.\d+|\d+),?/g
 
-                    const position = changedPosition.Position.WGS84.match(matchCoords).map((t=>parseFloat(t))).reverse()
+                    const position = changedPosition.Position.WGS84.match(matchCoords).map(((t: string)=>parseFloat(t))).reverse()
 
                     const trainObject = {
                         trainnumber: changedPosition.Train.AdvertisedTrainNumber,
@@ -52,7 +53,7 @@ async function fetchTrainPositions(io) {
                     };
 
                     if (trainPositions.hasOwnProperty(changedPosition.Train.AdvertisedTrainNumber)) {
-                        socket.emit("message", trainObject);
+                        socket.emit('message', trainObject);
                     }
 
                     trainPositions[changedPosition.Train.AdvertisedTrainNumber] = trainObject;
@@ -67,9 +68,9 @@ async function fetchTrainPositions(io) {
 
 
 
-    eventSource.onerror = function(e) {
-        console.log("EventSource failed.")
+    eventSource.onerror = function(e: any) {
+        console.log('EventSource failed.')
     }
 }
 
-module.exports = fetchTrainPositions;
+export default fetchTrainPositions;

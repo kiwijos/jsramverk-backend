@@ -1,11 +1,23 @@
-const { MongoClient } = require('mongodb');
+import { Collection, MongoClient } from 'mongodb';
+
+interface Ticket {
+    code: string;
+    trainnumber: string;
+    traindate: string;
+}
+
+interface DatabaseConnection {
+    collection: Collection<Ticket>;
+    client: MongoClient;
+}
 
 const database = {
-    run: async function run () {
+    run: async function run (): Promise<DatabaseConnection | undefined> {
         let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
 
         if (process.env.NODE_ENV === 'test') {
-            uri = ""; // TODO: setup test database?
+            // TODO: setup test database?
+            return undefined;
         }
 
         // Client references the connection to our datastore (Atlas, for example)
@@ -24,7 +36,7 @@ const database = {
             // Store references to the database and collection in order to run
             // operations on them later
             const database = client.db(dbName);
-            const collection = database.collection(collectionName);
+            const collection = database.collection<Ticket>(collectionName);
 
             return {
                 collection: collection,
@@ -32,9 +44,11 @@ const database = {
             };
         } catch (err) {
             console.error(`Something went wrong when trying to connect: ${err}\n`);
-        } 
-        await client.close(); // Ensure client closes if there is an error
+        }
+        // Ensure client closes if there is an error to free resources
+        // If there is no error, trust caller to close the client
+        await client.close();
     }
 }
 
-module.exports = database;
+export default database;
