@@ -1,6 +1,6 @@
-import { Response, Request } from 'express';
-import database from '../db/database';
-import { Collection, MongoClient } from 'mongodb';
+import { Response, Request } from "express";
+import database from "../db/database";
+import { Collection, MongoClient } from "mongodb";
 
 interface Ticket {
     code: string;
@@ -14,20 +14,20 @@ interface DatabaseConnection {
 }
 
 const tickets = {
-    getTickets: async function getTickets(
-        req: Request,
-        res: Response
-        ): Promise<Object>{
-        const db:DatabaseConnection | undefined = await database.run();
+    getTickets: async function getTickets(req: Request, res: Response): Promise<Object> {
+        const db: DatabaseConnection | undefined = await database.run();
 
-        const allTickets: Ticket[] = await db.collection.find(
-            {}, {
-                // Sort matched documents in descending order by id
-                sort: { '_id': -1 },
-                // Include all fields and rename _id to id
-                projection: { id: '$_id', code: 1, trainnumber: 1, traindate: 1},
-            }
-        ).toArray();
+        const allTickets: Ticket[] = await db.collection
+            .find(
+                {},
+                {
+                    // Sort matched documents in descending order by id
+                    sort: { _id: -1 },
+                    // Include all fields and rename _id to id
+                    projection: { id: "$_id", code: 1, trainnumber: 1, traindate: 1 }
+                }
+            )
+            .toArray();
 
         await db.client.close();
 
@@ -36,11 +36,8 @@ const tickets = {
         });
     },
 
-    createTicket: async function createTicket(
-        req: Request,
-        res: Response
-        ): Promise<Object> {
-        const db:DatabaseConnection | undefined = await database.run();
+    createTicket: async function createTicket(req: Request, res: Response): Promise<Object> {
+        const db: DatabaseConnection | undefined = await database.run();
 
         const result = await db.collection.insertOne({
             code: req.body.code,
@@ -55,7 +52,7 @@ const tickets = {
                 id: result.insertedId.toString(),
                 code: req.body.code,
                 trainnumber: req.body.trainnumber,
-                traindate: req.body.traindate,
+                traindate: req.body.traindate
             }
         });
     }

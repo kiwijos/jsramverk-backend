@@ -1,5 +1,5 @@
-import { Collection, MongoClient } from 'mongodb';
-import database from '../db/database';
+import { Collection, MongoClient } from "mongodb";
+import database from "../db/database";
 
 interface Ticket {
     code: string;
@@ -18,11 +18,10 @@ const trains = {
 
         try {
             db = await database.run();
-
-        } catch(error) {
+        } catch (error) {
             return {
                 status: error.status,
-                message: error.message,
+                message: error.message
             };
         } finally {
             await db.client.close();
