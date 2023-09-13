@@ -4,9 +4,10 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon dist/app.js",
         "build": "tsc",
-        "start": "nodemon dist/app.js"
+        "lint": "eslint --fix --ignore-path .eslintignore --ext .ts .",
+        "format": "prettier --write src/"
     },
     "keywords": [],
     "author": "",
