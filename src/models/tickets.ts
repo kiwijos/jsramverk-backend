@@ -14,7 +14,7 @@ interface DatabaseConnection {
 }
 
 const tickets = {
-    getTickets: async function getTickets(req: Request, res: Response): Promise<Object> {
+    getTickets: async function getTickets(req: Request, res: Response): Promise<object> {
         const db: DatabaseConnection | undefined = await database.run();
 
         const allTickets: Ticket[] = await db.collection
@@ -36,7 +36,7 @@ const tickets = {
         });
     },
 
-    createTicket: async function createTicket(req: Request, res: Response): Promise<Object> {
+    createTicket: async function createTicket(req: Request, res: Response): Promise<object> {
         const db: DatabaseConnection | undefined = await database.run();
 
         const result = await db.collection.insertOne({

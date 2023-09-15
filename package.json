@@ -6,8 +6,10 @@
     "scripts": {
         "start": "nodemon dist/app.js",
         "build": "tsc",
+        "test": "mocha",
+        "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=clover mocha",
         "lint": "eslint --fix --ignore-path .eslintignore --ext .ts .",
-        "format": "prettier --write src/"
+        "format": "prettier --write src/ test/"
     },
     "keywords": [],
     "author": "",
@@ -24,14 +26,24 @@
         "socket.io": "^4.6.1"
     },
     "devDependencies": {
+        "@istanbuljs/nyc-config-typescript": "^1.0.2",
+        "@types/chai": "^4.3.6",
         "@types/express": "^4.17.17",
+        "@types/mocha": "^10.0.1",
         "@types/node": "^20.5.9",
         "@types/node-fetch": "^2.6.4",
         "@typescript-eslint/eslint-plugin": "^6.7.0",
         "@typescript-eslint/parser": "^6.7.0",
+        "chai": "^4.3.8",
+        "chai-http": "^4.4.0",
         "eslint": "^8.49.0",
         "eslint-config-prettier": "^9.0.0",
+        "mocha": "^10.2.0",
+        "node-html-parser": "^6.1.9",
+        "nyc": "^15.1.0",
         "prettier": "3.0.3",
+        "source-map-support": "^0.5.21",
+        "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }
 }

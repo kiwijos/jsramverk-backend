@@ -13,7 +13,7 @@ interface DatabaseConnection {
 }
 
 const trains = {
-    fetchAllDelayedTrains: async function fetchAllDelayedTrains(): Promise<Object> {
+    fetchAllDelayedTrains: async function fetchAllDelayedTrains(): Promise<object> {
         let db: DatabaseConnection | undefined;
 
         try {

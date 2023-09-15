@@ -49,4 +49,10 @@ server.listen(port, (): void => {
     console.log(`Example app listening on port ${port}`);
 });
 
-fetchTrainPositions(io);
+// Temporary work-around preventing sockets from keeping
+// the server alive even after all tests have run
+if (process.env.NODE_ENV !== 'test') {
+    fetchTrainPositions(io);
+}
+
+export default server;
