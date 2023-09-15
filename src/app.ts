@@ -50,3 +50,5 @@ server.listen(port, (): void => {
 });
 
 fetchTrainPositions(io);
+
+export default server;
