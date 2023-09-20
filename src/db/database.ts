@@ -13,11 +13,10 @@ interface DatabaseConnection {
 
 const database = {
     run: async function run(): Promise<DatabaseConnection | undefined> {
-        const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
+        let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
 
         if (process.env.NODE_ENV === "test") {
-            // TODO: setup test database?
-            return undefined;
+            uri = process.env.MONGO_URI_TEST;
         }
 
         // Client references the connection to our datastore (Atlas, for example)
