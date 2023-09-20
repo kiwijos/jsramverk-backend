@@ -47,7 +47,7 @@ const tickets = {
 
         await db.client.close();
 
-        return res.json({
+        return res.status(201).json({
             data: {
                 id: result.insertedId.toString(),
                 code: req.body.code,
