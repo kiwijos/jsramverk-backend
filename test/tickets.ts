@@ -46,7 +46,7 @@ describe("tickets", () => {
         // Reset the "tickets" collection before each test
         beforeEach(async () => {
             const db = await database.run();
-            
+
             try {
                 await db.collection.drop();
             } catch (err) {
@@ -77,7 +77,9 @@ describe("tickets", () => {
                     res.body.should.have.property("data");
                     res.body.data.should.have.property("id");
                     res.body.data.should.have.property("code").equal(requestBody.code);
-                    res.body.data.should.have.property("trainnumber").equal(requestBody.trainnumber);
+                    res.body.data.should.have
+                        .property("trainnumber")
+                        .equal(requestBody.trainnumber);
                     res.body.data.should.have.property("traindate").equal(requestBody.traindate);
 
                     done();

@@ -18,7 +18,6 @@ chai.use(chaiHttp);
 
 // Start the test suite
 describe("app", () => {
-    
     // Start a nested test suite making a GET request to the "/" route
     describe("GET /", () => {
         it("request results in a 200 status code", (done) => {
