@@ -34,10 +34,10 @@ jobs:
                   mongodb-version: ${{ matrix.mongodb-version }}
 
             - name: Install dependencies
-              run: npm install
+              run: npm ci
 
             - name: Compile typescript files
-              run: npm build
+              run: npm run build
 
             - name: Run tests
               run: npm test
