@@ -51,7 +51,7 @@ server.listen(port, (): void => {
 
 // Temporary work-around preventing sockets from keeping
 // the server alive even after all tests have run
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
     fetchTrainPositions(io);
 }
 
