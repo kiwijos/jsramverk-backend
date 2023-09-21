@@ -2,6 +2,7 @@
 
 process.env.NODE_ENV = "test";
 
+import { doesNotMatch } from "assert";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import server from "../src/app";
@@ -42,6 +43,19 @@ describe("tickets", () => {
             trainnumber: "12345",
             traindate: "2023-09-20"
         };
+
+        // Reset the "tickets" collection before each test
+        beforeEach(async () => {
+            const db = await database.run();
+
+            try {
+                await db.collection.drop();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                await db.client.close();
+            }
+        });
 
         it("request results in a 201 status code", (done) => {
             chai.request(server)
