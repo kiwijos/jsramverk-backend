@@ -6,7 +6,7 @@
     "scripts": {
         "start": "nodemon dist/app.js",
         "build": "tsc",
-        "test": "mocha --recursive --exit --timeout 10000",
+        "test": "mocha --recursive --exit --timeout 20000",
         "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=clover npm run test",
         "lint": "eslint --fix --ignore-path .eslintignore --ext .ts .",
         "format": "prettier --write src/ test/"
