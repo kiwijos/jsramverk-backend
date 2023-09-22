@@ -36,7 +36,7 @@ describe("tickets", () => {
         });
     });
 
-    describe.skip("GET /tickets", () => {
+    describe("GET /tickets", () => {
         it("request results in a 200 status code", (done) => {
             chai.request(server)
                 .get("/tickets")
@@ -61,7 +61,7 @@ describe("tickets", () => {
         });
     });
 
-    describe.skip("POST /tickets", () => {
+    describe("POST /tickets", () => {
         const requestBody = {
             code: "ABC123",
             trainnumber: "12345",
