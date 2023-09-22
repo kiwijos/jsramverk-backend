@@ -11,17 +11,18 @@ interface DatabaseConnection {
     client: MongoClient;
 }
 
+const default_uri = "mongodb://localhost:27017";
+
 const database = {
     run: async function run(): Promise<DatabaseConnection | undefined> {
-        let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
+        // let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
 
-        if (process.env.NODE_ENV === "test") {
-            uri = process.env.MONGO_URI_TEST;
-        }
+        // if (process.env.NODE_ENV === "test") {
+        //     uri = process.env.MONGO_URI_TEST;
+        // }
 
-        console.log(process.env.NODE_ENV);
         // Client references the connection to our datastore (Atlas, for example)
-        const client = new MongoClient(uri);
+        const client = new MongoClient(default_uri);
 
         try {
             // Instruct driver to connect using the provided settings
@@ -38,7 +39,7 @@ const database = {
             const database = client.db(dbName);
             const collection = database.collection<Ticket>(collectionName);
 
-            console.log(`Connected to MongoDB using URI: ${uri}`);
+            console.log(`Connected to MongoDB using URI: ${default_uri}`);
 
             return {
                 collection: collection,
