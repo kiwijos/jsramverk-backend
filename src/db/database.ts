@@ -19,6 +19,7 @@ const database = {
             uri = process.env.MONGO_URI_TEST;
         }
 
+        console.log(process.env.NODE_ENV);
         // Client references the connection to our datastore (Atlas, for example)
         const client = new MongoClient(uri);
 
