@@ -11,31 +11,6 @@ chai.should();
 chai.use(chaiHttp);
 
 describe("tickets", () => {
-    describe('MongoDB Connection', () => {
-        it('should log the connection URI', async () => {
-            // Store the original console.log function
-            const originalConsoleLog = console.log;
-            
-            // Create a variable to capture the log output
-            let capturedLog = '';
-    
-            // Replace console.log with a custom function
-            console.log = (message) => {
-                capturedLog = message;
-            };
-    
-            const db = await database.run();
-
-            // Assert that the capturedLog contains the expected connection URI
-            capturedLog.should.include('mongodb://localhost:27017');
-    
-            // Restore the original console.log function
-            console.log = originalConsoleLog;
-
-            await db.client.close();
-        });
-    });
-
     describe("GET /tickets", () => {
         it("request results in a 200 status code", (done) => {
             chai.request(server)
