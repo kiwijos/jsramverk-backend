@@ -35,12 +35,6 @@ const io = new Server(server, {
 
 const port = 1337;
 
-app.get("/", (req: Request, res: Response): void => {
-    res.json({
-        data: "Hello World!"
-    });
-});
-
 app.use("/delayed", delayed);
 app.use("/tickets", tickets);
 app.use("/codes", codes);
