@@ -37,6 +37,8 @@ const database = {
             const database = client.db(dbName);
             const collection = database.collection<Ticket>(collectionName);
 
+            console.log(`Connected to MongoDB using URI: ${uri}`);
+
             return {
                 collection: collection,
                 client: client
