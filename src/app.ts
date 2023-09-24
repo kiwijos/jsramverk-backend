@@ -33,6 +33,20 @@ const io = new Server(server, {
     }
 });
 
+import mongoose from 'mongoose';
+
+startDb().catch(err => console.log(err));
+
+async function startDb() {
+    let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
+
+    if (process.env.NODE_ENV === "test") {
+        uri = process.env.MONGO_URI_TEST;
+    }
+
+  await mongoose.connect(uri);
+}
+
 const port = 1337;
 
 app.use("/delayed", delayed);
