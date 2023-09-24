@@ -5,7 +5,7 @@ import express, { Express } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-import fetchTrainPositions from "./models/trains";
+import fetchTrainPositions from "./controllers/trains";
 import delayed from "./routes/delayed";
 import tickets from "./routes/tickets";
 import codes from "./routes/codes";

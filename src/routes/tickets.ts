@@ -1,7 +1,7 @@
 import express, { Request, Response, Router } from "express";
 const router: Router = express.Router();
 
-import tickets from "../models/tickets";
+import tickets from "../controllers/tickets";
 
 router.get("/", (req: Request, res: Response) => tickets.getTickets(req, res));
 
