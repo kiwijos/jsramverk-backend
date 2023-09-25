@@ -18,14 +18,25 @@ const tickets = {
 
     createTicket: async function createTicket(req: Request, res: Response): Promise<object> {
         const newTicket = new Ticket(req.body);
-        await newTicket.save()
+        
+        try { 
+            await newTicket.save()
 
-        return res.status(201).json({
-            data: {
-                id: newTicket._id,
-                ...req.body
-            }
-        });
+            return res.status(201).json({
+                data: {
+                    id: newTicket._id,
+                    ...req.body
+                }
+            });
+        } catch (err) {
+            res.status(500).json({
+                errors: {
+                    status: 500,
+                    title: 'Database Error',
+                    message: err.message
+                }
+            });
+        }   
     }
 };
 
