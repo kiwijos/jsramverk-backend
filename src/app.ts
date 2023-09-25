@@ -44,7 +44,7 @@ async function startDb() {
         uri = process.env.MONGO_URI_TEST;
     }
 
-  await mongoose.connect(uri);
+    await mongoose.connect(uri, {dbName: "trains"});
 }
 
 const port = 1337;
