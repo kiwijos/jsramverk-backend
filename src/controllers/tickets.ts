@@ -3,10 +3,16 @@ import Ticket from "../models/ticket";
 
 const tickets = {
     getTickets: async function getTickets(req: Request, res: Response): Promise<object> {
-        const allTickets = await Ticket.find({}).sort({_id: -1});
+        const allTickets = await Ticket.find({});
+
+        // Rename _id to id
+        const renamedTickets = allTickets.map(ticket => {
+            const { _id, ...ticketData } = ticket.toJSON();
+            return { id: _id, ...ticketData };
+        });
 
         return res.json({
-            data: allTickets
+            data: renamedTickets
         });
     },
 
@@ -16,7 +22,7 @@ const tickets = {
 
         return res.status(201).json({
             data: {
-                id: newTicket._id.toString(),
+                id: newTicket._id,
                 ...req.body
             }
         });
