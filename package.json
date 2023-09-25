@@ -6,6 +6,7 @@
     "scripts": {
         "start": "nodemon dist/app.js",
         "build": "tsc",
+        "watch": "tsc --watch",
         "test": "mocha --exit --timeout 10000",
         "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=clover npm run test",
         "lint": "eslint --fix --ignore-path .eslintignore --ext .ts .",
@@ -21,6 +22,7 @@
         "eventsource": "^2.0.2",
         "express": "^4.14.0",
         "mongodb": "^6.0.0",
+        "mongoose": "^7.5.2",
         "morgan": "^1.10.0",
         "node-fetch": "^2.7.0",
         "socket.io": "^4.6.1"

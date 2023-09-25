@@ -5,37 +5,11 @@ process.env.NODE_ENV = "test";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import server from "../src/app";
-import database from "../src/db/database";
 
 chai.should();
 chai.use(chaiHttp);
 
 describe("tickets", () => {
-    describe('MongoDB Connection', () => {
-        it('should log the connection URI', async () => {
-            // Store the original console.log function
-            const originalConsoleLog = console.log;
-            
-            // Create a variable to capture the log output
-            let capturedLog = '';
-    
-            // Replace console.log with a custom function
-            console.log = (message) => {
-                capturedLog = message;
-            };
-    
-            const db = await database.run();
-
-            // Assert that the capturedLog contains the expected connection URI
-            capturedLog.should.include('mongodb://localhost:27017');
-    
-            // Restore the original console.log function
-            console.log = originalConsoleLog;
-
-            await db.client.close();
-        });
-    });
-
     describe("GET /tickets", () => {
         it("request results in a 200 status code", (done) => {
             chai.request(server)
@@ -67,19 +41,6 @@ describe("tickets", () => {
             trainnumber: "12345",
             traindate: "2023-09-20"
         };
-
-        // Reset the "tickets" collection before each test
-        beforeEach(async () => {
-            const db = await database.run();
-
-            try {
-                await db.collection.drop();
-            } catch (err) {
-                console.error(err);
-            } finally {
-                await db.client.close();
-            }
-        });
 
         it("request results in a 201 status code", (done) => {
             chai.request(server)

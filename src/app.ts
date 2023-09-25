@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-import fetchTrainPositions from "./models/trains";
+import fetchTrainPositions from "./controllers/trains";
 import delayed from "./routes/delayed";
 import tickets from "./routes/tickets";
 import codes from "./routes/codes";
@@ -33,13 +33,21 @@ const io = new Server(server, {
     }
 });
 
-const port = 1337;
+import mongoose from 'mongoose';
 
-app.get("/", (req: Request, res: Response): void => {
-    res.json({
-        data: "Hello World!"
-    });
-});
+startDb().catch(err => console.log(err));
+
+async function startDb() {
+    let uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@trains.9gkcdmg.mongodb.net/?retryWrites=true&w=majority`;
+
+    if (process.env.NODE_ENV === "test") {
+        uri = process.env.MONGO_URI_TEST;
+    }
+
+    await mongoose.connect(uri, {dbName: "trains"});
+}
+
+const port = 1337;
 
 app.use("/delayed", delayed);
 app.use("/tickets", tickets);
