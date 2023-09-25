@@ -6,6 +6,7 @@
     "scripts": {
         "start": "nodemon dist/app.js",
         "build": "tsc",
+        "watch": "tsc --watch",
         "test": "mocha --exit --timeout 10000",
         "coverage": "tsc && nyc --reporter=html --reporter=text --reporter=clover npm run test",
         "lint": "eslint --fix --ignore-path .eslintignore --ext .ts .",
