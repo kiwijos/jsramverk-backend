@@ -65,7 +65,7 @@ async function fetchTrainPositions(io): Promise<void> {
                         trainPositions[changedPosition.Train.AdvertisedTrainNumber] = trainObject;
                     }
                 } catch (err) {
-                    console.error("Error parsing message:", err);
+                    console.error(`Error parsing message: ${err}`);
                 }
 
                 return;
