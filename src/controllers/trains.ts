@@ -10,7 +10,7 @@ async function fetchTrainPositions(io): Promise<void> {
       <QUERY sseurl="true" namespace="järnväg.trafikinfo" objecttype="TrainPosition" schemaversion="1.0" limit="1" />
   </REQUEST>`;
 
-    const trainPositions: object = {};
+    const trainPositions = {};
 
     try {
         const response = await fetch(API_URL, {
