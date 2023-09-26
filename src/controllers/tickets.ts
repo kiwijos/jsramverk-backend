@@ -3,16 +3,13 @@ import Ticket from "../models/ticket";
 
 const tickets = {
     getTickets: async function getTickets(req: Request, res: Response): Promise<object> {
-        const allTickets = await Ticket.find({});
-
-        // Rename _id to id
-        const renamedTickets = allTickets.map(ticket => {
-            const { _id, ...ticketData } = ticket.toJSON();
-            return { id: _id, ...ticketData };
-        });
+        const allTickets = await Ticket.aggregate([
+            { $sort: { _id: -1 } },
+            { $project: { id: "$_id", code: 1, trainnumber: 1, traindate: 1, _id: 0 } }
+        ]);
 
         return res.json({
-            data: renamedTickets
+            data: allTickets
         });
     },
 
