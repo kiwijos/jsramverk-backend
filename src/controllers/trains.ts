@@ -1,50 +1,42 @@
 import fetch from "node-fetch";
-import { Response as FetchResponse } from "node-fetch";
 import EventSource from "eventsource";
+import type TrainPosition from "../models/TrainPosition.model";
+
+const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
 
 async function fetchTrainPositions(io): Promise<void> {
     const query = `<REQUEST>
-    <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
-    <QUERY sseurl="true" namespace="järnväg.trafikinfo" objecttype="TrainPosition" schemaversion="1.0" limit="1" />
-</REQUEST>`;
+      <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
+      <QUERY sseurl="true" namespace="järnväg.trafikinfo" objecttype="TrainPosition" schemaversion="1.0" limit="1" />
+  </REQUEST>`;
 
     const trainPositions = {};
 
-    const response: FetchResponse = await fetch(
-        "https://api.trafikinfo.trafikverket.se/v2/data.json",
-        {
+    try {
+        const response = await fetch(API_URL, {
             method: "POST",
             body: query,
             headers: { "Content-Type": "text/xml" }
+        });
+
+        const result = await response.json();
+
+        const sseurl = result?.RESPONSE?.RESULT[0]?.INFO?.SSEURL;
+
+        if (!sseurl) {
+            throw new Error("SSEURL missing from response.");
         }
-    );
-    const result = await response.json();
-    const sseurl = result.RESPONSE.RESULT[0].INFO.SSEURL;
 
-    const eventSource = new EventSource(sseurl);
+        const eventSource = new EventSource(sseurl);
 
-    eventSource.onopen = function () {
-        console.log("Connection to server opened.");
-    };
+        eventSource.onopen = () => {
+            console.log("Connection to server opened.");
+        };
 
-    io.on(
-        "connection",
-        (socket: {
-            emit: (
-                arg0: string,
-                arg1: {
-                    trainnumber: any;
-                    position: any;
-                    timestamp: any;
-                    bearing: any;
-                    status: boolean;
-                    speed: any;
-                }
-            ) => void;
-        }) => {
-            console.log("a user connected");
+        io.on("connection", (socket) => {
+            console.log("A user connected");
 
-            eventSource.onmessage = function (e: { data: string }) {
+            eventSource.onmessage = (e) => {
                 try {
                     const parsedData = JSON.parse(e.data);
 
@@ -53,11 +45,11 @@ async function fetchTrainPositions(io): Promise<void> {
 
                         const matchCoords = /(\d*\.\d+|\d+),?/g;
 
-                        const position = changedPosition.Position.WGS84.match(matchCoords)
-                            .map((t: string) => parseFloat(t))
+                        const position = (changedPosition.Position.WGS84.match(matchCoords) || [])
+                            .map((coord: string) => parseFloat(coord))
                             .reverse();
 
-                        const trainObject = {
+                        const trainObject: TrainPosition = {
                             trainnumber: changedPosition.Train.AdvertisedTrainNumber,
                             position: position,
                             timestamp: changedPosition.TimeStamp,
@@ -67,7 +59,8 @@ async function fetchTrainPositions(io): Promise<void> {
                         };
 
                         if (
-                            trainPositions.hasOwnProperty(
+                            Object.hasOwn(
+                                trainPositions,
                                 changedPosition.Train.AdvertisedTrainNumber
                             )
                         ) {
@@ -76,18 +69,20 @@ async function fetchTrainPositions(io): Promise<void> {
 
                         trainPositions[changedPosition.Train.AdvertisedTrainNumber] = trainObject;
                     }
-                } catch (e) {
-                    console.log(e);
+                } catch (err) {
+                    console.error(`Error parsing message: ${err}`);
                 }
 
                 return;
             };
-        }
-    );
+        });
 
-    eventSource.onerror = function (e: any) {
-        console.log("EventSource failed.");
-    };
+        eventSource.onerror = (err) => {
+            console.error(`EventSource failed: ${err}`);
+        };
+    } catch (err) {
+        console.error(`Error fetching train positions: ${err}`);
+    }
 }
 
 export default fetchTrainPositions;

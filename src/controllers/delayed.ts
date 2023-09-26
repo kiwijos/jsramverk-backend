@@ -1,8 +1,11 @@
 import fetch from "node-fetch";
 import { Request, Response } from "express";
+import ErrorResponse from "../models/ErrorResponse.model";
+
+const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
 
 const delayed = {
-    getDelayedTrains: function getDelayedTrains(req: Request, res: Response): void {
+    getDelayedTrains: async function getDelayedTrains(req: Request, res: Response): Promise<object | ErrorResponse> {
         const query = `<REQUEST>
                   <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
                   <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8">
@@ -31,19 +34,30 @@ const delayed = {
                   </QUERY>
             </REQUEST>`;
 
-        const response = fetch("https://api.trafikinfo.trafikverket.se/v2/data.json", {
-            method: "POST",
-            body: query,
-            headers: { "Content-Type": "text/xml" }
-        })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (result) {
-                return res.json({
-                    data: result.RESPONSE.RESULT[0].TrainAnnouncement
-                });
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                body: query,
+                headers: { "Content-Type": "text/xml" }
             });
+            
+            const result = await response.json();
+            
+            return res.json({
+                data: result.RESPONSE.RESULT[0].TrainAnnouncement
+            });
+        } catch (err) {
+            console.error(`Error fetching delayed trains: ${err}`);
+
+            res.status(500).json({
+                errors: {
+                    status: 500,
+                    source: API_URL,
+                    title: 'Server Error',
+                    message: err.message
+                }
+            });
+        }
     }
 };
 

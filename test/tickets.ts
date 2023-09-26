@@ -72,4 +72,32 @@ describe("tickets", () => {
                 });
         });
     });
+
+    describe("POST /tickets bad request", () => {
+        it("empty request result in 500 status code", (done) => {
+            chai.request(server)
+            .post("/tickets")
+            .send({})
+            .end((err, res) => {
+                res.should.have.status(500);
+                done();
+            });
+        });
+
+        it("response contains correct json data", (done) => {
+            chai.request(server)
+            .post("/tickets")
+            .send({})
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.should.be.json;
+                res.body.should.be.a("object");
+                res.body.should.have.property("errors");
+                res.body.errors.should.have.property("status").equal(500);
+                res.body.errors.should.have.property("title").equal("Database Error");
+                res.body.errors.should.have.property("message").include("Ticket validation failed");
+                done();
+            });
+        });
+    });
 });

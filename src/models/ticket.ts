@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 interface ITicket {
     code: string;
@@ -12,6 +12,6 @@ const ticketSchema = new Schema<ITicket>({
     traindate: { type: String, required: true }
 });
 
-const Ticket = model<ITicket>('Ticket', ticketSchema);
+const Ticket = model<ITicket>("Ticket", ticketSchema);
 
 export default Ticket;
