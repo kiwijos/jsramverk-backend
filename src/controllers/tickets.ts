@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import Ticket from "../models/ticket";
+import Ticket from "../models/Ticket";
 
 const tickets = {
     getTickets: async function getTickets(req: Request, res: Response): Promise<object> {
