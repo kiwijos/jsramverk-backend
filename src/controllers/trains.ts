@@ -11,38 +11,38 @@ async function fetchTrainPositions(io): Promise<void> {
   </REQUEST>`;
 
     const trainPositions: object = {};
-  
+
     try {
         const response = await fetch(API_URL, {
             method: "POST",
             body: query,
-            headers: { "Content-Type": "text/xml" },
+            headers: { "Content-Type": "text/xml" }
         });
-  
+
         const result = await response.json();
 
         const sseurl = result?.RESPONSE?.RESULT[0]?.INFO?.SSEURL;
-  
+
         if (!sseurl) {
             throw new Error("SSEURL missing from response.");
         }
-  
+
         const eventSource = new EventSource(sseurl);
-  
+
         eventSource.onopen = () => {
             console.log("Connection to server opened.");
         };
-  
+
         io.on("connection", (socket) => {
             console.log("A user connected");
-    
+
             eventSource.onmessage = (e) => {
                 try {
                     const parsedData = JSON.parse(e.data);
-        
+
                     if (parsedData) {
                         const changedPosition = parsedData.RESPONSE.RESULT[0].TrainPosition[0];
-        
+
                         const matchCoords = /(\d*\.\d+|\d+),?/g;
 
                         const position = (changedPosition.Position.WGS84.match(matchCoords) || [])
@@ -55,10 +55,15 @@ async function fetchTrainPositions(io): Promise<void> {
                             timestamp: changedPosition.TimeStamp,
                             bearing: changedPosition.Bearing,
                             status: !changedPosition.Deleted,
-                            speed: changedPosition.Speed,
+                            speed: changedPosition.Speed
                         };
-        
-                        if (Object.hasOwn(trainPositions, changedPosition.Train.AdvertisedTrainNumber)) {
+
+                        if (
+                            Object.hasOwn(
+                                trainPositions,
+                                changedPosition.Train.AdvertisedTrainNumber
+                            )
+                        ) {
                             socket.emit("message", trainObject);
                         }
 
@@ -71,7 +76,7 @@ async function fetchTrainPositions(io): Promise<void> {
                 return;
             };
         });
-  
+
         eventSource.onerror = (err) => {
             console.error(`EventSource failed: ${err}`);
         };
