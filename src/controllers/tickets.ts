@@ -1,8 +1,9 @@
 import { Response, Request } from "express";
 import Ticket from "../models/Ticket";
+import type ErrorResponse from "../models/ErrorResponse.model";
 
 const tickets = {
-    getTickets: async function getTickets(req: Request, res: Response): Promise<object> {
+    getTickets: async function getTickets(req: Request, res: Response): Promise<object | ErrorResponse> {
         try {
             const allTickets = await Ticket.aggregate([
                 { $sort: { _id: -1 } },
@@ -16,6 +17,7 @@ const tickets = {
             res.status(500).json({
                 errors: {
                     status: 500,
+                    source: "/tickets",
                     title: 'Database Error',
                     message: err.message
                 }
@@ -23,7 +25,7 @@ const tickets = {
         }
     },
 
-    createTicket: async function createTicket(req: Request, res: Response): Promise<object> {
+    createTicket: async function createTicket(req: Request, res: Response): Promise<object | ErrorResponse> {
         const newTicket = new Ticket(req.body);
         
         try { 
@@ -39,6 +41,7 @@ const tickets = {
             res.status(500).json({
                 errors: {
                     status: 500,
+                    source: "/tickets",
                     title: 'Database Error',
                     message: err.message
                 }
