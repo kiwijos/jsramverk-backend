@@ -1,16 +1,18 @@
 import fetch from "node-fetch";
 import EventSource from "eventsource";
 import type TrainPosition from "../models/TrainPosition.model";
+import type TrainPositions from "../models/TrainPositions.model";
+import { Server } from "socket.io";
 
 const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
 
-async function fetchTrainPositions(io): Promise<void> {
+async function fetchTrainPositions(io: Server): Promise<void> {
     const query = `<REQUEST>
       <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
       <QUERY sseurl="true" namespace="järnväg.trafikinfo" objecttype="TrainPosition" schemaversion="1.0" limit="1" />
   </REQUEST>`;
 
-    const trainPositions = {};
+    const trainPositions: TrainPositions = {};
 
     try {
         const response = await fetch(API_URL, {
