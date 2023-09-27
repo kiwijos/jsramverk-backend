@@ -6,8 +6,16 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import server from "../src/index";
 
+import Ticket from "../src/models/Ticket";
+
 chai.should();
 chai.use(chaiHttp);
+
+const requestBody = {
+    code: "ABC123",
+    trainnumber: "12345",
+    traindate: "2023-09-20"
+};
 
 describe("tickets", () => {
     describe("GET /tickets", () => {
@@ -36,12 +44,9 @@ describe("tickets", () => {
     });
 
     describe("POST /tickets", () => {
-        const requestBody = {
-            code: "ABC123",
-            trainnumber: "12345",
-            traindate: "2023-09-20"
-        };
-
+        beforeEach(async () => {
+            await Ticket.deleteMany();
+        });
         it("request results in a 201 status code", (done) => {
             chai.request(server)
                 .post("/tickets")
