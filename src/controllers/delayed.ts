@@ -5,7 +5,10 @@ import ErrorResponse from "../models/ErrorResponse.model";
 const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
 
 const delayed = {
-    getDelayedTrains: async function getDelayedTrains(req: Request, res: Response): Promise<object | ErrorResponse> {
+    getDelayedTrains: async function getDelayedTrains(
+        req: Request,
+        res: Response
+    ): Promise<object | ErrorResponse> {
         const query = `<REQUEST>
                   <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
                   <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8">
@@ -40,9 +43,9 @@ const delayed = {
                 body: query,
                 headers: { "Content-Type": "text/xml" }
             });
-            
+
             const result = await response.json();
-            
+
             return res.json({
                 data: result.RESPONSE.RESULT[0].TrainAnnouncement
             });
@@ -53,7 +56,7 @@ const delayed = {
                 errors: {
                     status: 500,
                     source: API_URL,
-                    title: 'Server Error',
+                    title: "Server Error",
                     message: err.message
                 }
             });
