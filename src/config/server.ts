@@ -32,7 +32,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
                 "http://localhost:9000",
                 "http://localhost:5173",
                 "https://localhost:5000",
-                "https://master--fastidious-sunburst-6bd3ae.netlify.app/"
+                "https://master--fastidious-sunburst-6bd3ae.netlify.app"
             ],
             methods: ["GET", "POST", "PUT", "DELETE"]
         }
