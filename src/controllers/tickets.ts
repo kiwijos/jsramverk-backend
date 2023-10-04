@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import Ticket from "../models/Ticket";
+import Ticket from "../db/models/Ticket";
 import type ErrorResponse from "../models/ErrorResponse.model";
 
 const tickets = {
