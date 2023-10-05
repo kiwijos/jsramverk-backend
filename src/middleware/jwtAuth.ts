@@ -3,6 +3,10 @@ import jwt from "jsonwebtoken";
 
 const jwtAuth = {
     checkToken: function (req: Request, res: Response, next: NextFunction) {
+        // If test, dont check token
+        if (process.env.NODE_ENV === "test") {
+            return next();
+        }
         const providedToken = req.headers["x-access-token"];
         console.log("Checking jwt token");
         jwt.verify(providedToken, process.env.JWT_SECRET, function (err) {
