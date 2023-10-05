@@ -1,10 +1,6 @@
 import { Schema, model } from "mongoose";
 
-interface ITicket {
-    code: string;
-    trainnumber: string;
-    traindate: string;
-}
+import type ITicket from "../../models/ITicket.model";
 
 const ticketSchema = new Schema<ITicket>({
     code: { type: String, required: true },
