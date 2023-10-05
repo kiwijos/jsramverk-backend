@@ -1,6 +1,8 @@
 import express, { Express } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { graphqlHTTP } from "express-graphql";
+import { schema, resolver } from "./schema/index";
 
 import delayed from "../routes/delayed";
 import tickets from "../routes/tickets";
@@ -22,5 +24,15 @@ app.use("/delayed", jwtAuth.checkToken, delayed);
 app.use("/tickets", jwtAuth.checkToken, tickets);
 app.use("/codes", jwtAuth.checkToken, codes);
 app.use("/auth", auth);
+
+// Make handler a graphql handler
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        schema,
+        rootValue: resolver,
+        graphiql: true
+    })
+);
 
 export default app;

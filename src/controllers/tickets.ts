@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import Ticket from "../models/Ticket";
+import Ticket from "../db/models/Ticket";
 import type ErrorResponse from "../models/ErrorResponse.model";
 
 const tickets = {
@@ -43,6 +43,43 @@ const tickets = {
                     ...req.body
                 }
             });
+        } catch (err) {
+            res.status(500).json({
+                errors: {
+                    status: 500,
+                    source: "/tickets",
+                    title: "Database Error",
+                    message: err.message
+                }
+            });
+        }
+    },
+
+    updateTicket: async function updateTicket(
+        req: Request,
+        res: Response
+    ): Promise<object | ErrorResponse> {
+        try {
+            const ticket = await Ticket.findById(req.body.id);
+
+            if (ticket === null) {
+                return res.status(404).json({
+                    errors: {
+                        status: 404,
+                        source: "/tickets",
+                        title: "Could not find ticket",
+                        message: "Could not find ticket"
+                    }
+                });
+            }
+
+            ticket.code = req.body.code;
+            ticket.trainnumber = req.body.trainnumber;
+            ticket.traindate = req.body.traindate;
+
+            await ticket.save();
+
+            return res.status(204).send();
         } catch (err) {
             res.status(500).json({
                 errors: {
