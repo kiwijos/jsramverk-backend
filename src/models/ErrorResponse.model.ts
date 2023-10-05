@@ -3,7 +3,7 @@ interface ErrorResponse {
         status: number;
         source: string;
         title: string;
-        message: string;
+        detail: string;
     };
 }
 
