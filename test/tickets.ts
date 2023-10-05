@@ -109,7 +109,7 @@ describe("tickets", () => {
                     res.body.errors.should.have.property("status").equal(500);
                     res.body.errors.should.have.property("title").equal("Database Error");
                     res.body.errors.should.have
-                        .property("message")
+                        .property("detail")
                         .include("Ticket validation failed");
                     done();
                 });
