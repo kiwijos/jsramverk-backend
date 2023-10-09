@@ -1,7 +1,5 @@
 import fetch from "node-fetch";
 import { Request, Response } from "express";
-import ErrorResponse from "../models/ErrorResponse.model";
-import type TrainDelay from "../models/TrainDelay.model";
 
 const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
 
@@ -12,10 +10,7 @@ const cache = new Map();
 let changeid = "0";
 
 const delayed = {
-    getDelayedTrains: async function getDelayedTrains(
-        req: Request,
-        res: Response
-    ): Promise<{ data: TrainDelay[] } | ErrorResponse> {
+    getDelayedTrains: async function getDelayedTrains(req: Request, res: Response): Promise<void> {
         const query = `<REQUEST>
                   <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
                   <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8"
@@ -76,9 +71,7 @@ const delayed = {
                 });
             }
 
-            return res.json({
-                data: Array.from(cache.values())
-            });
+            res.json({ data: Array.from(cache.values()) });
         } catch (err) {
             console.error(`Error fetching delayed trains: ${err}`);
 
