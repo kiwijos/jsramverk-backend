@@ -1,17 +1,26 @@
 import fetch from "node-fetch";
 import { Request, Response } from "express";
 import ErrorResponse from "../models/ErrorResponse.model";
+import type TrainDelay from "../models/TrainDelay.model";
 
 const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
+
+// Cache announcements to prevent over-fetching
+const cache = new Map();
+
+// Id to keep track of fetched announcements
+let changeid = "0";
 
 const delayed = {
     getDelayedTrains: async function getDelayedTrains(
         req: Request,
         res: Response
-    ): Promise<object | ErrorResponse> {
+    ): Promise<TrainDelay[] | ErrorResponse> {
         const query = `<REQUEST>
                   <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
-                  <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8">
+                  <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8"
+                    includedeletedobjects="true"
+                    changeid="${changeid}">
                         <FILTER>
                         <AND>
                             <EQ name="ActivityType" value="Avgang" />
@@ -46,8 +55,29 @@ const delayed = {
 
             const result = await response.json();
 
+            // Update id to only fetch newer entries
+            changeid = result.RESPONSE.RESULT[0].INFO.LASTCHANGEID;
+
+            if (cache.size === 0) {
+                // Initially populate cache with all announcements
+                result.RESPONSE.RESULT[0].TrainAnnouncement.forEach((delay) => {
+                    cache.set(delay.ActivityId, delay);
+                });
+            } else if (result.RESPONSE.RESULT[0].TrainAnnouncement.length > 0) {
+                // Add only new announcements and remove those that have been deleted (if any)
+                result.RESPONSE.RESULT[0].TrainAnnouncement.forEach((delay) => {
+                    if (cache.has(delay.ActivityId)) {
+                        if (delay?.Deleted === true) {
+                            cache.delete(delay.ActivityId);
+                        }
+                    } else {
+                        cache.set(delay.ActivityId, delay);
+                    }
+                });
+            }
+
             return res.json({
-                data: result.RESPONSE.RESULT[0].TrainAnnouncement
+                data: Array.from(cache.values())
             });
         } catch (err) {
             console.error(`Error fetching delayed trains: ${err}`);
