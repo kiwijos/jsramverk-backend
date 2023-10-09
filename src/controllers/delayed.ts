@@ -15,7 +15,7 @@ const delayed = {
     getDelayedTrains: async function getDelayedTrains(
         req: Request,
         res: Response
-    ): Promise<TrainDelay[] | ErrorResponse> {
+    ): Promise<{ data: TrainDelay[] } | ErrorResponse> {
         const query = `<REQUEST>
                   <LOGIN authenticationkey="${process.env.TRAFIKVERKET_API_KEY}" />
                   <QUERY objecttype="TrainAnnouncement" orderby='AdvertisedTimeAtLocation' schemaversion="1.8"

@@ -25,6 +25,8 @@ async function fetchTrainPositions(io: Server): Promise<void> {
 
         const sseurl = result?.RESPONSE?.RESULT[0]?.INFO?.SSEURL;
 
+        console.log(result.RESPONSE.RESULT[0]);
+
         if (!sseurl) {
             throw new Error("SSEURL missing from response.");
         }
