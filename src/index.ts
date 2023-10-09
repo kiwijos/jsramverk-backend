@@ -3,7 +3,7 @@ dotenv.config();
 
 import { server, io } from "./config/server";
 import fetchTrainPositions from "./controllers/trains";
-import startDb from "./config/database";
+import startDb from "./db/database";
 
 const port = process.env.PORT || 1337;
 

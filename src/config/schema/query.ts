@@ -1,4 +1,4 @@
-import ticketRepository from "../../db/ticketRepository";
+import ticketRepository from "../../db/repository/ticketRepository";
 
 const query = {
     tickets: async ({ limit }: { limit: number }) => {
