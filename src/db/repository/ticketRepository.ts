@@ -1,5 +1,5 @@
-import Ticket from "./models/Ticket";
-import type ITicket from "../models/ITicket";
+import Ticket from "../models/Ticket";
+import type ITicket from "../../models/ITicket.model";
 
 const ticketRepository = {
     getAllTickets: async (limit: number) => {

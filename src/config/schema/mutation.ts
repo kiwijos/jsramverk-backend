@@ -1,11 +1,11 @@
-import ticketRepository from "../../db/ticketRepository";
-import type ITicket from "../../models/ITicket";
+import ticketRepository from "../../db/repository/ticketRepository";
+import type ITicket from "../../models/ITicket.model";
 
 const mutation = {
     createTicket: async ({ code, trainnumber, traindate }: ITicket) => {
-        const book = ticketRepository.createTicket({ code, trainnumber, traindate });
+        const ticket = ticketRepository.createTicket({ code, trainnumber, traindate });
         return {
-            data: book,
+            data: ticket,
             ok: true,
             error: ""
         };

@@ -51,7 +51,7 @@ const codes = {
                     status: 500,
                     source: API_URL,
                     title: "Server Error",
-                    message: err.message
+                    detail: err.message
                 }
             });
         }

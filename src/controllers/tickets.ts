@@ -22,7 +22,7 @@ const tickets = {
                     status: 500,
                     source: "/tickets",
                     title: "Database Error",
-                    message: err.message
+                    detail: err.message
                 }
             });
         }
@@ -49,7 +49,7 @@ const tickets = {
                     status: 500,
                     source: "/tickets",
                     title: "Database Error",
-                    message: err.message
+                    detail: err.message
                 }
             });
         }
@@ -68,7 +68,7 @@ const tickets = {
                         status: 404,
                         source: "/tickets",
                         title: "Could not find ticket",
-                        message: "Could not find ticket"
+                        detail: "Could not find ticket"
                     }
                 });
             }
@@ -86,7 +86,7 @@ const tickets = {
                     status: 500,
                     source: "/tickets",
                     title: "Database Error",
-                    message: err.message
+                    detail: err.message
                 }
             });
         }
