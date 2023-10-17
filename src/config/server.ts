@@ -9,10 +9,14 @@ interface ServerToClientEvents {
     noArg: () => void;
     basicEmit: (a: number, b: string, c: Buffer) => void;
     withAck: (d: string, callback: (e: number) => void) => void;
+    newdata: (data: { id: string; deleted: boolean }) => void;
 }
 
 interface ClientToServerEvents {
-    hello: () => void;
+    noArg: () => void;
+    update: (id: string) => void;
+    delete: (id: string) => void;
+    create: (id: string) => void;
 }
 
 interface InterServerEvents {
@@ -20,8 +24,7 @@ interface InterServerEvents {
 }
 
 interface SocketData {
-    name: string;
-    age: number;
+    id: string;
 }
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
@@ -38,5 +41,26 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
         }
     }
 );
+
+io.sockets.on("connection", (socket) => {
+    // Inform all connected clients that the data has been updated
+    socket.on("update", (id: string) => {
+        console.log(`Someone updated ${id}`);
+        const data = { id: id, deleted: false };
+        io.emit("newdata", data);
+    });
+    // Inform all connected clients that the data has been deleted
+    socket.on("delete", (id: string) => {
+        console.log(`Someone deleted ${id}`);
+        const data = { id: id, deleted: true };
+        io.emit("newdata", data);
+    });
+    // Inform all connected clients that the data has created
+    socket.on("create", (id: string) => {
+        console.log(`Someone created ${id}`);
+        const data = { id: id, deleted: false };
+        io.emit("newdata", data);
+    });
+});
 
 export { server, io };
