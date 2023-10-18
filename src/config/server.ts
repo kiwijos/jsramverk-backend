@@ -46,20 +46,17 @@ io.sockets.on("connection", (socket) => {
     // Inform all connected clients that the data has been updated
     socket.on("update", (id: string) => {
         console.log(`Someone updated ${id}`);
-        const data = { id: id, deleted: false };
-        io.emit("newdata", data);
+        io.emit("newdata", { id, deleted: false });
     });
     // Inform all connected clients that the data has been deleted
     socket.on("delete", (id: string) => {
         console.log(`Someone deleted ${id}`);
-        const data = { id: id, deleted: true };
-        io.emit("newdata", data);
+        io.emit("newdata", { id, deleted: true });
     });
     // Inform all connected clients that the data has created
     socket.on("create", (id: string) => {
         console.log(`Someone created ${id}`);
-        const data = { id: id, deleted: false };
-        io.emit("newdata", data);
+        io.emit("newdata", { id, deleted: false });
     });
 });
 
