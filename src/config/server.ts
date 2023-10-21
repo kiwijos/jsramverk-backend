@@ -15,7 +15,6 @@ interface ServerToClientEvents {
 
 interface ClientToServerEvents {
     noArg: () => void;
-    authenticated: (success: boolean) => void;
     update: (id: string) => void;
     delete: (id: string) => void;
     create: (id: string) => void;
