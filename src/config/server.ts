@@ -2,6 +2,7 @@ import app from "./app";
 
 import http from "http";
 import { Server } from "socket.io";
+import jwt from "jsonwebtoken";
 
 const server = http.createServer(app);
 
@@ -14,6 +15,7 @@ interface ServerToClientEvents {
 
 interface ClientToServerEvents {
     noArg: () => void;
+    authenticated: (success: boolean) => void;
     update: (id: string) => void;
     delete: (id: string) => void;
     create: (id: string) => void;
@@ -42,6 +44,20 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEve
     }
 );
 
+io.use((socket, next) => {
+    // Check if the token sent from the client is valid
+    const token = socket.handshake.auth.token;
+    jwt.verify(token, process.env.JWT_SECRET, function (err) {
+        if (err) {
+            console.error(`Someone attempted to connect but got error ${err.name}: ${err.message}`);
+            next(err); // The client will receive a connect_error event
+        } else {
+            console.log("Socket authenticated");
+            next(); // Proceed with the connection
+        }
+    });
+});
+
 io.sockets.on("connection", (socket) => {
     // Inform all connected clients that the data has been updated
     socket.on("update", (id: string) => {
@@ -53,7 +69,7 @@ io.sockets.on("connection", (socket) => {
         console.log(`Someone deleted ${id}`);
         io.emit("newdata", { id, deleted: true });
     });
-    // Inform all connected clients that the data has created
+    // Inform all connected clients that the data has been created
     socket.on("create", (id: string) => {
         console.log(`Someone created ${id}`);
         io.emit("newdata", { id, deleted: false });
