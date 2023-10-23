@@ -6,6 +6,7 @@ const schema = buildSchema(`
         ticket(id: ID!): Ticket
         trainDelays: TrainDelayResponse
         ticketCodes: TicketCodeResponse
+        trainStations: TrainStationResponse
     }
     type Mutation {
         createTicket(code: String!, trainnumber: String!, traindate: String!): TicketResponse
@@ -21,6 +22,11 @@ const schema = buildSchema(`
         ok: Boolean
         error: String
         data: [TicketCode]
+    }
+    type TrainStationResponse {
+        ok: Boolean
+        error: String
+        data: [TrainStation]
     }
     type TicketCode {
         Code: String
@@ -41,6 +47,12 @@ const schema = buildSchema(`
         ToLocation: [TrainLocation]
         TrainOwner: String
     }
+    type TrainStation {
+        AdvertisedLocationName: String!
+        LocationSignature: String!
+        Longitude: String!
+        Latitude: String!
+    }
     type TrainLocation {
         LocationName: String!
         Order: Int!
@@ -51,9 +63,6 @@ const schema = buildSchema(`
         code: String!
         trainnumber: String!
         traindate: String!
-    }
-    type Tickets {
-        tickets: [Ticket]
     }
     type TicketResponse {
         data: Ticket

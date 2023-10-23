@@ -1,13 +1,73 @@
 import fetch from "node-fetch";
 
 const API_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json";
+
 // Cache announcements to prevent over-fetching
-const cache = new Map();
+const delayedCache = new Map();
 let changeid = "0";
+
+const stationCache = new Map();
 
 const codeCache = new Map();
 
 const trainRepository = {
+    getTrainStations: async () => {
+        if (stationCache.has("stations")) {
+            return {
+                ok: true,
+                data: stationCache.get("stations"),
+                error: null
+            };
+        }
+
+        const query = `
+        <REQUEST>
+            <LOGIN authenticationkey="d8625fb909f941dd855b6611ee172759" />
+            <QUERY objecttype="TrainStation" schemaversion="1.4">
+                <INCLUDE>AdvertisedLocationName</INCLUDE>
+                <INCLUDE>Geometry</INCLUDE>
+                <INCLUDE>LocationSignature</INCLUDE>
+            </QUERY>
+        </REQUEST>`;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                body: query,
+                headers: { "Content-Type": "text/xml" }
+            });
+            const result = await response.json();
+
+            // Replace the Geometry object with longitude and latitude
+            const stations = result.RESPONSE.RESULT[0].TrainStation.map((station) => {
+                const [longitude, latitude] = station.Geometry.WGS84.split("POINT ")[1]
+                    .split("(")[1]
+                    .split(")")[0]
+                    .split(" ");
+
+                return {
+                    AdvertisedLocationName: station.AdvertisedLocationName,
+                    Longitude: longitude,
+                    Latitude: latitude,
+                    LocationSignature: station.LocationSignature
+                };
+            });
+
+            stationCache.set("stations", stations);
+
+            return {
+                ok: true,
+                data: stations,
+                error: null
+            };
+        } catch (err) {
+            return {
+                ok: false,
+                data: null,
+                error: err.message
+            };
+        }
+    },
     getTrainDelays: async () => {
         const query = `
             <REQUEST>
@@ -45,37 +105,40 @@ const trainRepository = {
                 body: query,
                 headers: { "Content-Type": "text/xml" }
             });
+
             const result = await response.json();
+
             // Update id to only fetch newer entries
             changeid = result.RESPONSE.RESULT[0].INFO.LASTCHANGEID;
-            if (cache.size === 0) {
-                // Initially populate cache with all announcements
+
+            if (delayedCache.size === 0) {
+                // Initially populate delayedCache with all announcements
                 result.RESPONSE.RESULT[0].TrainAnnouncement.forEach((delay) => {
-                    cache.set(delay.ActivityId, delay);
+                    delayedCache.set(delay.ActivityId, delay);
                 });
             } else if (result.RESPONSE.RESULT[0].TrainAnnouncement.length > 0) {
                 // Add only new announcements and remove those that have been deleted (if any)
                 result.RESPONSE.RESULT[0].TrainAnnouncement.forEach((delay) => {
-                    if (cache.has(delay.ActivityId)) {
+                    if (delayedCache.has(delay.ActivityId)) {
                         if (delay?.Deleted === true) {
-                            cache.delete(delay.ActivityId);
+                            delayedCache.delete(delay.ActivityId);
                         }
                     } else {
-                        cache.set(delay.ActivityId, delay);
+                        delayedCache.set(delay.ActivityId, delay);
                     }
                 });
             }
-            const data = Array.from(cache.values());
+
             return {
                 ok: true,
-                data: data,
+                data: Array.from(delayedCache.values()),
                 error: null
             };
         } catch (err) {
             return {
                 ok: false,
                 data: null,
-                error: err
+                error: err.message
             };
         }
     },
@@ -119,11 +182,9 @@ const trainRepository = {
             console.error(`Error fetching codes: ${err}`);
 
             return {
-                errors: {
-                    ok: false,
-                    data: null,
-                    error: err.Message
-                }
+                ok: false,
+                data: null,
+                error: err.Message
             };
         }
     }

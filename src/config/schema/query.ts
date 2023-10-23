@@ -13,6 +13,9 @@ const query = {
     },
     ticketCodes: async () => {
         return await trainRepository.getTrainCodes();
+    },
+    trainStations: async () => {
+        return await trainRepository.getTrainStations();
     }
 };
 
