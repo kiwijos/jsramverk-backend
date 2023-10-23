@@ -25,14 +25,14 @@ app.use("/tickets", jwtAuth.checkToken, tickets);
 app.use("/codes", jwtAuth.checkToken, codes);
 
 // Make handler a graphql handler
-app.use("/auth", graphqlHTTP({ schema: authSchema, rootValue: authResolver, graphiql: true }));
+app.use("/auth", graphqlHTTP({ schema: authSchema, rootValue: authResolver, graphiql: false }));
 
 app.use(
     "/graphql",
     graphqlHTTP({
         schema,
         rootValue: resolver,
-        graphiql: true
+        graphiql: false
     })
 );
 
