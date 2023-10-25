@@ -46,6 +46,7 @@ const schema = buildSchema(`
         OperationalTrainNumber: String
         ToLocation: [TrainLocation]
         TrainOwner: String
+        TimeAtLocation: String
     }
     type TrainStation {
         AdvertisedLocationName: String!

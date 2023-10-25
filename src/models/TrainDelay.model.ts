@@ -12,4 +12,5 @@ export default interface TrainDelay {
     OperationalTrainNumber: string;
     ToLocation: TrainLocation;
     TrainOwner: string;
+    TimeAtLocation?: string;
 }
