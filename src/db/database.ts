@@ -7,7 +7,7 @@ async function startDb() {
         uri = process.env.MONGO_URI_TEST;
     }
 
-    await mongoose.connect(uri, { dbName: "trains" });
+    await mongoose.connect(uri, { dbName: process.env.DATABASE_NAME ?? "trains" });
 }
 
 export default startDb;
