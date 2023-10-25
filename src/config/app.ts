@@ -29,6 +29,7 @@ app.use("/auth", graphqlHTTP({ schema: authSchema, rootValue: authResolver, grap
 
 app.use(
     "/graphql",
+    jwtAuth.checkToken,
     graphqlHTTP({
         schema,
         rootValue: resolver,
