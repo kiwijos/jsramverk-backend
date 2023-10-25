@@ -78,10 +78,10 @@ const trainRepository = {
                         <FILTER>
                         <AND>
                             <EQ name="ActivityType" value="Avgang" />
-                            <GT name="EstimatedTimeAtLocation" value="$now" />
+                            <GT name="EstimatedTimeAtLocation" value="$dateadd(-01:00:00)" />
                             <AND>
-                                <GT name='AdvertisedTimeAtLocation' value='$dateadd(-00:15:00)' />
-                                <LT name='AdvertisedTimeAtLocation'                   value='$dateadd(02:00:00)' />
+                                <GT name='AdvertisedTimeAtLocation' value='$dateadd(-01:00:00)' />
+                                <LT name='AdvertisedTimeAtLocation' value='$dateadd(02:00:00)' />
                             </AND>
                         </AND>
                         </FILTER>
